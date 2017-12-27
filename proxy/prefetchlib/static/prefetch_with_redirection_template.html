@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<head>
+  {{range .PrefetchURLs}}
+  <link rel="prefetch" href="{{.}}"></link>
+  {{end}}
+</head>
+<body>
+  <script>
+    {{.RedirectScript}}
+  </script>
+</body>
+</html>

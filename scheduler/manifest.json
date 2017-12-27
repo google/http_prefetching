@@ -1,0 +1,69 @@
+// Copyright 2017 Google Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+{
+	"manifest_version": 2,
+
+	"name": "Prefetch Scheduler",
+	"description": "This extension implements a scheduler that prefetches resources based on the priorities.",
+	"version": "1.0",
+
+	// Permissions required by the extension. The "http://*/*" and
+	// "https://*/*" wildcard permissions enable interposing on all
+	// HTTP/HTTPS requests. It is purposely left very broad during
+	// development. Any production version of this extension should
+	// narrow it down to just the set of supported websites.
+	"permissions": [
+		"<all_urls>",
+		"webRequest",
+		"webRequestBlocking",
+		"tabs"
+	],
+
+	// The main extension script that will run in the background. The
+	// Chrome developer documentation suggests setting "persistent" to
+	// false so that one uses "event pages" instead of "background
+	// pages" for efficiency. However, this extension uses the
+	// webRequest API, which does not work with event pages. The API
+	// that is supposed to replace webRequest and works with event
+	// pages, declarativeWebRequest, is "currently on hold, without
+	// concrete plans to move to stable."
+	"background": {
+		"persistent": true,
+		"scripts": [
+      "numericpriorityscheduler.js",
+      "prefetchresource.js",
+      "message.js",
+      "timetracker.js",
+      "runner.js"
+    ]
+	},
+
+	"content_scripts": [
+		{
+			"all_frames": true,
+			"matches":["<all_urls>"],
+			"js": [
+        "message.js",
+        "content.js",
+        "prefetchresource.js",
+        "run_content.js"
+      ],
+			"run_at": "document_start",
+			"match_about_blank": true
+		}
+	],
+
+	"content_security_policy": "default-src 'none'; script-src 'self'; style-src 'self'; connect-src https://*"
+}
