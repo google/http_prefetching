@@ -22,17 +22,17 @@ import (
 	"bytes"
 	"compress/gzip"
 	"fmt"
-  "html/template"
+	"html/template"
 	"io"
 	"net/http"
 	"net/url"
 	"strings"
 
-  "github.com/golang/glog"
+	"github.com/golang/glog"
 )
 
 const (
-	redirectTemplate    = "./prefetchlib/static/prefetch_with_redirection_template.html"
+	redirectTemplate        = "./prefetchlib/static/prefetch_with_redirection_template.html"
 	defaultPrefetchPriority = 0
 
 	// The delimeter to split the prefetch URLS.
@@ -42,8 +42,8 @@ const (
 
 // Handler defines the prefetchproxyhandler.Handler type.
 type redirectHandler struct {
-	htmlTemplate        *template.Template     // The stub to be sent back with the initial response.
-	prefetchURLProvider *Provider              // The instance for looking up the prefetch URLs.
+	htmlTemplate        *template.Template // The stub to be sent back with the initial response.
+	prefetchURLProvider *Provider          // The instance for looking up the prefetch URLs.
 }
 
 // New returns a new prefetchproxyhandler object.
@@ -77,11 +77,11 @@ func (h *redirectHandler) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	// query parameter as "lp".
 	query := req.URL.Query()
 	lp := query.Get("lp")
-  if lp == "" {
+	if lp == "" {
 		glog.Errorf("got an invalid request: %v", req.URL)
 		http.Error(rw, "", http.StatusBadRequest)
 		return
-  }
+	}
 
 	unescapedURL, err := url.PathUnescape(lp)
 	if err != nil {
@@ -98,9 +98,9 @@ func (h *redirectHandler) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 
 	prefetchURLs := []Resource{}
 	prefetch := req.Header.Get("x-req-prefetch")
-  if prefetch == "" {
-    prefetch = query.Get("prefetch")
-  }
+	if prefetch == "" {
+		prefetch = query.Get("prefetch")
+	}
 	if prefetch != "" {
 		prefetchURLsStored, err := h.prefetchURLProvider.GetPrefetchURLs(dstURL.String(), prefetch)
 		if err != nil {
@@ -110,8 +110,8 @@ func (h *redirectHandler) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		}
 		prefetchURLs = append(prefetchURLs, prefetchURLsStored...)
 	} else {
-	  glog.Infof("No prefetching requested. Just redirecting to %v", dstURL.String())
-  }
+		glog.Infof("No prefetching requested. Just redirecting to %v", dstURL.String())
+	}
 
 	rw.Header().Set("Content-Type", "text/html")
 	rw.Header().Set("Referrer-Policy", "no-referrer")
@@ -146,8 +146,8 @@ func (h *redirectHandler) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		PrefetchURLs   []string
 		RedirectScript template.JS
 	}{
-		PrefetchURLs: URLs,
-    RedirectScript: template.JS(fmt.Sprintf("var dstURL='%s';\nwindow.location.assign(dstURL);", dstURL.String())),
+		PrefetchURLs:   URLs,
+		RedirectScript: template.JS(fmt.Sprintf("var dstURL='%s';\nwindow.location.assign(dstURL);", dstURL.String())),
 	}
 	targetPageBuf := &bytes.Buffer{}
 	err = h.htmlTemplate.Execute(targetPageBuf, templateData)
@@ -156,7 +156,7 @@ func (h *redirectHandler) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		http.Error(rw, "", http.StatusBadGateway)
 		return
 	}
-  glog.V(5).Infof("%v", targetPageBuf)
+	glog.V(5).Infof("%v", targetPageBuf)
 
 	_, err = io.Copy(writer, targetPageBuf)
 	if err != nil {

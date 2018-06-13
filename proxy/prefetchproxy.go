@@ -37,7 +37,7 @@ var (
 func main() {
 	handler, err := prefetchlib.New(*prefetchURLsFilename)
 	if err != nil {
-    glog.Fatal("Failed to create Prefetch Proxy Handler handler: %v\n", err)
+		glog.Fatal("Failed to create Prefetch Proxy Handler handler: %v\n", err)
 	}
 	http.Handle("/", handler)
 
