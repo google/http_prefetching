@@ -19,12 +19,12 @@
 package main
 
 import (
-  "flag"
+	"flag"
 	"fmt"
 	"net/http"
-	"prefetching/proxy/prefetchlib"
 
-  "github.com/golang/glog"
+	"./prefetchlib"
+	"github.com/golang/glog"
 )
 
 var (
