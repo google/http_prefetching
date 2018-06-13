@@ -39,9 +39,9 @@ import (
 
 // Resource defines the information of a prefetch resource in the JSON.
 type Resource struct {
-	URL      string                        `json:"url"`
-	Type     int                           `json:"type"`  // https://w3c.github.io/preload/#as-attribute.
-	Priority int                           `json:"priority"`
+	URL      string `json:"url"`
+	Type     int    `json:"type"` // https://w3c.github.io/preload/#as-attribute.
+	Priority int    `json:"priority"`
 }
 
 // ExperimentPrefetchURLs represents the type to decode the prefetch URLs for a
